@@ -9,7 +9,9 @@
 <body>
     <h1>Tasks</h1>
     {%for task in tasks%}
-    <p>{{task.task_name}}</p>
+    
+    <h1>{{task.task_name}}</h1>
+    <p>{{task_description}}</p>
     {%endfor%}
     
 </body>
