@@ -52,7 +52,7 @@ def edit_task(category, task_id):
             mongo.db[category].remove(the_task)
             mongo.db[form_values["category_name"]].insert(the_task)
             
-        return redirect(url_for("get_tasks_by_category", category_name=category))
+        return redirect(url_for("get_tasks_by_category", category_name=form_values["category_name"]))
     else:
         the_task =  mongo.db[category].find_one({"_id": ObjectId(task_id)})
         categories = get_category_names()
