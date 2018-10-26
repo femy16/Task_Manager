@@ -14,12 +14,25 @@ def get_tasks():
     tasks = mongo.db.tasks.find()
     return render_template("tasks.html", tasks=tasks)
     
-@app.route("/add_task", methods=["GET", "POST"]) 
+@app.route("/tasks/<collection_name>")
+def get_tasks_by_collection(collection_name):
+    tasks = mongo.db[collection_name].find()
+    return render_template("tasks.html", tasks=tasks)    
+    
+@app.route("/add_task", methods=["GET", "POST"])
 def add_task():
     if request.method=="POST":
-        mongo.db.tasks.insert_one(request.form.to_dict())  
+        form_values = request.form.to_dict()
+        form_values["is_urgent"] = "is_urgent" in form_values
+        category = form_values["category_name"]
+        mongo.db[category].insert_one(form_values)
+        return redirect("/")
     else:
-        categories = mongo.db.categories.find() 
+        categories = []
+        for category in mongo.db.collection_names():
+            if not category.startswith("system."):
+                categories.append(category)
+        
         return render_template("addtask.html", categories=categories)
 
 if __name__ == "__main__":
